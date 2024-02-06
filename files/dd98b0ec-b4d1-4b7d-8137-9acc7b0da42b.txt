@@ -1,0 +1,1 @@
+https://micourt.courts.michigan.gov/case-search/court/C21/search?firstName=&middleName=&lastName=MAHA&birthYear=0&caseNumber=&caseYear=0&caseType=&caseStatus=adjudicated&caseStatus=disposed&caseStatus=closed&caseTypeSubCategory=1&filedDateFrom=2023-01-01T17:00:00.000Z&filedDateTo=2024-01-01T17:00:00.000Z&page=1
