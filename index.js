@@ -42,7 +42,7 @@ const main = async () => {
 					<Base64EncodedGZipCompressedContent>${base64string.toString('base64')}</Base64EncodedGZipCompressedContent>
 				</CollectionRecord>`
 					const collectionRecordBase64 = zlib.gzipSync(Buffer.from(String(collectionRecord))).toString('base64');
-					const rowData = `${fileId}|${moment().format('MM/DD/YYYY HH:mm:ss a').toUpperCase()}|${collectionRecordBase64}`
+					const rowData = `${fileId}|${moment().format('M/D/YYYY H:mm:ss a').toUpperCase()}|${collectionRecordBase64}`
 					rowList.push(rowData);
 				}
 			}
@@ -57,12 +57,7 @@ const main = async () => {
 			if (fs.existsSync(fileName)) {
 				fs.unlinkSync(fileName);
 			}
-			const writeStream = fs.createWriteStream(fileName);
-			for (let j = 0; j < rowList.length; j++) {
-				writeStream.write(`${rowList[j]}\n`)
-			}
-			// rowList.forEach(value => writeStream.write(`${value}\n`));
-			writeStream.end();
+			fs.writeFileSync(fileName, rowList.join('\n'));
 			bar1.update(i + 1);
 		}
 	}catch (e) {
