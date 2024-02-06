@@ -48,7 +48,7 @@ const main = async () => {
 		if (!fs.existsSync('./output')){
 			fs.mkdirSync('./output');
 		}
-		const fileName = `./output/${xmlFilName.replace('.xml','.out')}`
+		const fileName = `./output/${xmlFilName.replace('.xml','_content.txt')}`
 		if(fs.existsSync(fileName)){
 			fs.unlinkSync(fileName);
 		}
