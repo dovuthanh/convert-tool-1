@@ -13,7 +13,7 @@ const main = async () => {
 	//read xml file from folder files
 	console.log('Started....')
 	const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-	const files = fs.readdirSync('./files');
+	const files = fs.readdirSync('./encode');
 	const xmlsFiles = files.filter((file) => file.endsWith('.xml'));
 	bar1.start(xmlsFiles.length, 0);
 	//loop through xml file
@@ -21,7 +21,7 @@ const main = async () => {
 		for (let i = 0; i < xmlsFiles.length; i++) {
 			const rowList = [];
 			const xmlFilName = xmlsFiles[i];
-			const xmlJsonContent = JSON.parse(convert.xml2json(fs.readFileSync(`files/${xmlFilName}`, 'utf8'), {
+			const xmlJsonContent = JSON.parse(convert.xml2json(fs.readFileSync(`encode/${xmlFilName}`, 'utf8'), {
 				compact: true,
 				spaces: 4
 			}));
@@ -29,12 +29,12 @@ const main = async () => {
 				const lead = xmlJsonContent.Root.LeadList.Lead[j];
 				const fileId = lead._attributes.ID;
 				//get html file
-				if (fs.existsSync(`./files/${fileId}.htm`)) {
+				if (fs.existsSync(`./encode/${fileId}.htm`)) {
 					//content
-					const htmlFile = fs.readFileSync(`./files/${fileId}.htm`);
+					const htmlFile = fs.readFileSync(`./encode/${fileId}.htm`);
 					const base64string = zlib.gzipSync(htmlFile);
 					//url
-					const websiteAddress = fs.readFileSync(`./files/${fileId}.txt`).toString();
+					const websiteAddress = fs.readFileSync(`./encode/${fileId}.txt`).toString();
 					const collectionRecord = `<?xml version="1.0" encoding="utf-16"?>
 				<CollectionRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 					<Uri>${websiteAddress.replaceAll('&', '&amp;')}</Uri>
@@ -49,10 +49,10 @@ const main = async () => {
 
 			//write to file
 			//Not sure about this
-			if (!fs.existsSync('./output')) {
-				fs.mkdirSync('./output');
+			if (!fs.existsSync('./output_encode')) {
+				fs.mkdirSync('./output_encode');
 			}
-			const fileName = `./output/${xmlFilName.replace('.xml', '_content.txt')}`
+			const fileName = `./output_encode/${xmlFilName.replace('.xml', '_content.txt')}`
 			console.log(fileName);
 			if (fs.existsSync(fileName)) {
 				fs.unlinkSync(fileName);
