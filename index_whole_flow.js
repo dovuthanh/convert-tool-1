@@ -50,9 +50,13 @@ const main = async () => {
 				// When the browser launches, it should have one about:blank tab open.
 				const page = await browser.newPage();
 				await page.setViewport({ width: 1800, height: 768});
-				await page.goto(url, {waitUntil: 'networkidle0'});
-				const element = await page.waitForSelector('#continue-button-id');
-				await element.click();
+				await page.goto(url, {waitUntil: 'networkidle0', timeout: 10000000});
+				try {
+					const element = await page.waitForSelector('#continue-button-id');
+					await element.click();
+				}catch (ex){
+					console.log('not found continue button')
+				}
 				const searchResult = await page.waitForSelector('#total-count-id', {timeout: 10000000});
 				const htmlContent = await page.content();
 				const collection = {
