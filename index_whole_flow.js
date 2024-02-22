@@ -8,9 +8,11 @@ const zlib = require("node:zlib");
 const moment = require("moment");
 const cliProgress = require('cli-progress');
 const process = require("process");
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const Stealth = require('puppeteer-extra-plugin-stealth');
 const baseUrl = 'https://micourt.courts.michigan.gov/case-search/court/D29/search?firstName=&middleName=&lastName=PRUN&birthYear=0&caseNumber=&caseYear=0&caseType=&caseStatus=adjudicated&caseStatus=disposed&caseStatus=closed&caseTypeSubCategory=1&filedDateFrom=2023-02-01T17:00:00.000Z&filedDateTo=2024-02-01T17:00:00.000Z&page=1'
-
+puppeteer.use(Stealth())
 const main = async () => {
 	//read xml file from folder files
 	console.log('Started....')
