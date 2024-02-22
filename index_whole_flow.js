@@ -95,7 +95,6 @@ const main = async () => {
 			}
 			fs.writeFileSync(fileName, rowList.join('\n'));
 		}
-		process.exit(0);
 		console.log('completed successfully')
 	}catch (e) {
 		console.log('fdasfdsf');
