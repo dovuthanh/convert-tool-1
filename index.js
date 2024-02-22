@@ -32,14 +32,14 @@ const main = async () => {
 				if (fs.existsSync(`./files/${fileId}.htm`)) {
 					//content
 					const htmlFile = fs.readFileSync(`./files/${fileId}.htm`);
-					const base64string = htmlFile.toString('base64');
+					const base64string = zlib.gzipSync(htmlFile).toString('base64');
 					//url
 					const websiteAddress = fs.readFileSync(`./files/${fileId}.txt`).toString();
 					const collectionRecord = `<?xml version="1.0" encoding="utf-16"?>
 					<CollectionRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 						<Uri>${websiteAddress.replaceAll('&', '&amp;')}</Uri>
 						<TimeStamp>${new Date().toISOString()}</TimeStamp>
-						<Base64EncodedGZipCompressedContent>${base64string.toString('base64')}</Base64EncodedGZipCompressedContent>
+						<Base64EncodedGZipCompressedContent>${base64string}</Base64EncodedGZipCompressedContent>
 					</CollectionRecord>`
 					const collectionRecordBase64 = zlib.gzipSync(Buffer.from(String(collectionRecord))).toString('base64');
 					const rowData = `${fileId}|${moment().format('M/D/YYYY H:mm:ss a').toUpperCase()}|${collectionRecordBase64}`

@@ -42,7 +42,7 @@ const main = async () => {
 
 				const findItemProcessed = listCollection.find((item) => item.fileId === fileId);
 				if(findItemProcessed){
-					bar1.update(i);
+					bar1.update(j);
 					continue;
 				}
 
@@ -61,13 +61,13 @@ const main = async () => {
 				const htmlContent = await page.content();
 				const collection = {
 					url: url,
-					content: Buffer.from(htmlContent).toString('base64'),
+					content: zlib.gzipSync(Buffer.from(String(htmlContent))).toString('base64'),
 					timestamp: new Date().toISOString(),
 					fileId: fileId
 				}
 				listCollection.push(collection);
 				fs.writeFileSync('list_collection.json', JSON.stringify(listCollection));
-				bar1.update(i);
+				bar1.update(j);
 			}
 
 			for (let j = 0; j < listCollection.length; j++) {
