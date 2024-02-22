@@ -72,11 +72,12 @@ const main = async () => {
 
 			for (let j = 0; j < listCollection.length; j++) {
 				const item = listCollection[j];
-				const collectionRecord = `<?xml version="1.0" encoding="utf-16"?>
-					<CollectionRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-						<Uri>${item.url('&', '&amp;')}</Uri>
-						<TimeStamp>${item.timestamp}</TimeStamp>
-						<Base64EncodedGZipCompressedContent>${item.content}</Base64EncodedGZipCompressedContent>
+				const collectionRecord = `
+<?xml version="1.0" encoding="utf-16"?>
+<CollectionRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Uri>${item.url.replace('&', '&amp;')}</Uri>
+<TimeStamp>${item.timestamp}</TimeStamp>
+<Base64EncodedGZipCompressedContent>${item.content}</Base64EncodedGZipCompressedContent>
 					</CollectionRecord>`
 				const collectionRecordBase64 = zlib.gzipSync(Buffer.from(String(collectionRecord))).toString('base64');
 				const rowData = `${item.fileId}|${moment().format('M/D/YYYY H:mm:ss a').toUpperCase()}|${collectionRecordBase64}`
