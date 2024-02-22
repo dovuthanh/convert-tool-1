@@ -53,7 +53,7 @@ const main = async () => {
 				await page.goto(url, {waitUntil: 'networkidle0'});
 				const element = await page.waitForSelector('#continue-button-id');
 				await element.click();
-				const searchResult = await page.waitForSelector('#search-results');
+				const searchResult = await page.waitForSelector('#total-count-id');
 				const htmlContent = await page.content();
 				const collection = {
 					url: url,
