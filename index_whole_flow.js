@@ -95,10 +95,13 @@ const main = async () => {
 			}
 			fs.writeFileSync(fileName, rowList.join('\n'));
 		}
+		process.exit(0);
+		console.log('completed successfully')
 	}catch (e) {
 		console.log('fdasfdsf');
 		console.log(e.message);
 	}
+	process.exit(0);
 }
 
 const generateUrlByLastName = (newLastName) => {
