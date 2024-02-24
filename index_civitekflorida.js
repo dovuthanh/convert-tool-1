@@ -14,6 +14,8 @@ const Stealth = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(Stealth())
 // const {executablePath} = require('puppeteer')
 const antibotbrowser = require("antibotbrowser");
+const {timeout} = require("puppeteer-core");
+const child_process = require('child_process');
 const xmlPath = './xmls/civiteflorida/';
 const stateIDs =new Map( [
 	['BAKER', '02'],
@@ -60,17 +62,30 @@ const main = async () => {
 	//loop through xml file
 	// const antibrowser = await antibotbrowser.startbrowser();
 	// const browser = await puppeteer.connect({browserWSEndpoint: antibrowser.websokcet});
-	// const browser = await puppeteer.connect({
-	// 	browserWSEndpoint: 'ws://127.0.0.1:9222/devtools/browser/78be4fd4-441f-4779-9568-db6c06b3f2f3',
-	// 	ignoreHTTPSErrors: true
-	// 	// headless: false,
-	// 	// args: ['--enable-gpu'],
-	// });
-	const browser = await puppeteer.launch({
-		// executablePath: executablePath(),
-		headless: false,
-		args: ['--auto-open-devtools-for-tabs']
-	})
+	let browser = null;
+	try {
+		browser = await puppeteer.connect({
+			browserWSEndpoint: 'ws://127.0.0.1:9222/devtools/browser/78be4fd4-441f-4779-9568-db6c06b3f2f3',
+			ignoreHTTPSErrors: true
+			// headless: false,
+			// args: ['--enable-gpu'],
+		});
+	}catch (e){
+		//not found chrome then start it
+		const runGoogle = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --remote-debugging-port=9222 --no-first-run --no-default-browser-check --user-data-dir=$(mktemp -d -t 'chrome-remote_data_dir')";
+		const child = child_process.execSync(runGoogle,null, {
+			shell: true
+		});
+		console.log('fdsfasd')
+		console.log("stdout: ",child);
+	}
+	console.log('fdsfasd1212')
+	return;
+	// const browser = await puppeteer.launch({
+	// 	// executablePath: executablePath(),
+	// 	headless: false,
+	// 	args: ['--auto-open-devtools-for-tabs']
+	// })
 	try {
 		for (let i = 0; i < xmlsFiles.length; i++) {
 			const rowList = [];
@@ -125,12 +140,31 @@ const main = async () => {
 					const sequenceType = await page.waitForSelector( '[id="form:search_tab:seq"]');
 					await sequenceType.type(sequenceKey);
 
+					try {
+						//cloudflare checkbox
+						//try to find checkbox
+						const clouflare = await page.waitForSelector('[id="challenge-stage"]', {timeout: 20000});
+						const input = await clouflare.waitForSelector('input');
+						input.click();
+					}catch (e){
+						console.log('not found checkbox or autocomplete')
+					}
+					//wait cloudflare check completed
+					const clouflareSuccess = await page.waitForSelector('[id="success-circle"]');
+					const searchButton = await page.waitForSelector( '[id="form:j_idt3380"]');
+					await searchButton.click();
+					await page.waitForNavigation();
+					const expandAll = await page.waitForSelector( '[id="form:expand"]');
+					await expandAll.click();
+					const imageDropdown = await page.waitForSelector( '[id="openCharges"]');
+					await imageDropdown.click();
+					await page.waitForSelector('[id="form:docketpanel_content"]', {visible: true});
+					await page.waitForSelector('[id="form:chargeDetailsTable:0:j_idt7733"]', {visible: true});
 				}catch (ex){
 					console.log(ex)
 					console.log('not found continue button')
 					return;
 				}
-				const searchResult = await page.waitForSelector('#total-count-id', {timeout: 10000000});
 				const htmlContent = await page.content();
 				const collection = {
 					url: url,
@@ -174,7 +208,7 @@ const main = async () => {
 		console.log('fdasfdsf');
 		console.log(e.message);
 	}
-	// process.exit(0);
+	process.exit(0);
 }
 
 void main();
