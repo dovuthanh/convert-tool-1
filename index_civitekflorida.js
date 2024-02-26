@@ -9,9 +9,10 @@ const moment = require("moment");
 const cliProgress = require('cli-progress');
 const process = require("process");
 // const puppeteer = require('puppeteer-core');
-const puppeteer = require('puppeteer-extra');
-const Stealth = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(Stealth())
+// const puppeteer = require('puppeteer-extra');
+const puppeteer = require('puppeteer');
+// const Stealth = require('puppeteer-extra-plugin-stealth');
+// puppeteer.use(Stealth())
 // const {executablePath} = require('puppeteer')
 const antibotbrowser = require("antibotbrowser");
 const {timeout} = require("puppeteer-core");
@@ -65,26 +66,27 @@ const main = async () => {
 	let browser = null;
 	try {
 		browser = await puppeteer.connect({
-			browserWSEndpoint: 'ws://127.0.0.1:9222/devtools/browser/78be4fd4-441f-4779-9568-db6c06b3f2f3',
+			browserWSEndpoint: 'ws://127.0.0.1:9222/devtools/browser/dfe43b6b-8b15-4290-bc48-d01a0291be8d',
 			ignoreHTTPSErrors: true
 			// headless: false,
 			// args: ['--enable-gpu'],
 		});
 	}catch (e){
 		//not found chrome then start it
-		const runGoogle = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --remote-debugging-port=9222 --no-first-run --no-default-browser-check --user-data-dir=$(mktemp -d -t 'chrome-remote_data_dir')";
-		const child = child_process.execSync(runGoogle,null, {
-			shell: true
-		});
-		console.log('fdsfasd')
-		console.log("stdout: ",child);
+		// const runGoogle = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --remote-debugging-port=9222 --no-first-run --no-default-browser-check --user-data-dir=$(mktemp -d -t 'chrome-remote_data_dir')";
+		// const child = child_process.execSync(runGoogle,null, {
+		// 	shell: true
+		// });
+		// console.log('fdsfasd')
+		// console.log("stdout: ",child);
 	}
-	console.log('fdsfasd1212')
-	return;
-	// const browser = await puppeteer.launch({
+	// browser = await puppeteer.launch({
 	// 	// executablePath: executablePath(),
 	// 	headless: false,
-	// 	args: ['--auto-open-devtools-for-tabs']
+	// 	args: [
+	// 		'--disable-web-security',
+	// 		'--disable-features=IsolateOrigins,site-per-process'
+	// 	]
 	// })
 	try {
 		for (let i = 0; i < xmlsFiles.length; i++) {
@@ -115,40 +117,54 @@ const main = async () => {
 				}
 				// When the browser launches, it should have one about:blank tab open.
 				let page = (await browser.pages())[0];
-				await page.setViewport({ width: 1800, height: 768});
-				await page.goto(url, {waitUntil: 'networkidle0', timeout: 10000000});
+				// await page.setViewport({ width: 1800, height: 768});
+				// await page.goto(url, {waitUntil: 'networkidle0', timeout: 10000000});
 				try {
-					const element1 = await page.waitForSelector('button');
-					await element1.click();
-					await page.waitForNavigation();
-					const element2 = await page.waitForSelector('button');
-					await element2.click();
-					await page.waitForNavigation();
-					const lis = await page.$$("form li", {timeout: 300000});
-					await lis[1].click();
+					// const element1 = await page.waitForSelector('button');
+					// await element1.click();
+					// await page.waitForNavigation();
+					// const element2 = await page.waitForSelector('button');
+					// await element2.click();
+					// await page.waitForNavigation();
+					// const lis = await page.$$("form li", {timeout: 300000});
+					// await lis[1].click();
 
 
-					const yearType = await page.waitForSelector( '[id="form:search_tab:year"]');
-					await yearType.type(yearKey);
-					const courtType = await page.waitForSelector( '[id="form:search_tab:cs_court1_input"]');
-					await courtType.type('TR');
-					const courtLabelType = await page.waitForSelector( '[id="form:search_tab:cs_court1_label"]');
-					await courtLabelType.evaluate(element => element.innerText = 'Traffic Infraction (TR)');
-					const courtFocusType = await page.waitForSelector( '[id="form:search_tab:cs_court1_focus"]');
-					await courtFocusType.evaluate(e => e.setAttribute("aria-activedescendant", "form:search_tab:cs_court1_14"));
-					await courtFocusType.evaluate(e => e.setAttribute("aria-describedby", "form:search_tab:cs_court1_14"));
-					const sequenceType = await page.waitForSelector( '[id="form:search_tab:seq"]');
-					await sequenceType.type(sequenceKey);
+					// const yearType = await page.waitForSelector( '[id="form:search_tab:year"]');
+					// await yearType.type(yearKey, {delay: 3000});
+					// const courtType = await page.waitForSelector( '[id="form:search_tab:cs_court1_input"]');
+					// await courtType.type('TR');
+					// const courtLabelType = await page.waitForSelector( '[id="form:search_tab:cs_court1_label"]');
+					// await courtLabelType.evaluate(element => element.innerText = 'Traffic Infraction (TR)');
+					// const courtFocusType = await page.waitForSelector( '[id="form:search_tab:cs_court1_focus"]');
+					// await courtFocusType.evaluate(e => e.setAttribute("aria-activedescendant", "form:search_tab:cs_court1_14"));
+					// await courtFocusType.evaluate(e => e.setAttribute("aria-describedby", "form:search_tab:cs_court1_14"));
+					// const sequenceType = await page.waitForSelector( '[id="form:search_tab:seq"]');
+					// await sequenceType.type(sequenceKey);
 
 					try {
 						//cloudflare checkbox
 						//try to find checkbox
-						const clouflare = await page.waitForSelector('[id="challenge-stage"]', {timeout: 20000});
-						const input = await clouflare.waitForSelector('input');
-						input.click();
+						// const clouflare = await page.waitForSelector('#challenge-stage', {timeout: 20000});
+						// console.log(clouflare);
+						// await page.waitForTimeout(7000)
+						// const elementHandle = await page.frames().find(f => f.name().includes('cf-chl-widget'));
+						// const elementHandle = await page.$("iframe");
+						const elementHandle = await page.waitForSelector('iframe');
+						// const x = await frame.contentFrame();
+						//identify element inside frame
+						console.log(elementHandle);
+						const frame = await elementHandle.contentFrame();
+						await frame.click('input[type="checkbox"]');
+						const check = await x.waitForSelector('input[type="checkbox"]');
+						await check.click()
+						return;
 					}catch (e){
+						console.log(e);
 						console.log('not found checkbox or autocomplete')
+						return;
 					}
+					return;
 					//wait cloudflare check completed
 					const clouflareSuccess = await page.waitForSelector('[id="success-circle"]');
 					const searchButton = await page.waitForSelector( '[id="form:j_idt3380"]');
