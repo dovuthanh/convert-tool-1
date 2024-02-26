@@ -81,6 +81,7 @@ const main = async () => {
 					const btnSearch = await page.waitForSelector('[id="searchButton"]');
 					await btnSearch.click();
 					await page.waitForNavigation();
+					await page.waitForTimeout(2000);
 					const htmlContent = await page.content();
 					//take curren page
 					const collection = {
@@ -96,6 +97,7 @@ const main = async () => {
 					console.log(result);
 					await page.goto(result['url'], {waitUntil: 'networkidle0', timeout: 10000000});
 					await page.waitForSelector('[id="mainTableContent"]');
+					await page.waitForTimeout(2000);
 					const htmlContentChild = await page.content();
 					collection.children = {
 						url: page.url(),
